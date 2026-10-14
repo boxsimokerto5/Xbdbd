@@ -1,0 +1,6 @@
+{
+  "name": "Sekolah Rakyat",
+  "description": "Aplikasi peminjaman dan pemantauan armada mobil Sekolah Rakyat dengan desain dinamis ceria, multi-role (Admin, Staff, Keamanan), verifikasi pintu keluar, dan peta tracking perjalanan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

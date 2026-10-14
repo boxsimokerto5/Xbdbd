@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['userId', 'email', 'fullName', 'role', 'approvalStatus'])
+        && data.userId is string
+        && data.email is string
+        && data.fullName is string
+        && data.role in ['ADMIN', 'STAFF', 'KEAMANAN']
+        && data.approvalStatus in ['PENDING', 'APPROVED', 'REJECTED'];
+    }
+
+    function isValidLoan(data) {
+      return data.keys().hasAll(['id', 'vehicleId', 'status'])
+        && data.id is string
+        && data.vehicleId is string
+        && data.status in ['pending', 'approved', 'rejected', 'PENDING', 'APPROVED', 'REJECTED', 'PENDING_KEAMANAN', 'APPROVED_IN_TRIP', 'REJECTED_BY_KEAMANAN', 'RETURNED_COMPLETED'];
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated() && isOwner(userId);
+    }
+
+    // Loans Collection
+    match /loans/{loanId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidLoan(request.resource.data);
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SekolahRakyatDatabaseSchema",
+  "description": "Firestore schema for Sekolah Rakyat Car Loan & Multi-Role Authentication",
+  "entities": {
+    "users": {
+      "path": "users/{userId}",
+      "description": "User profile with role-based authorization (Admin, Staff, Keamanan)",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "fullName": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "STAFF", "KEAMANAN"] },
+        "approvalStatus": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"] },
+        "phoneNumber": { "type": "string" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["userId", "email", "fullName", "role", "approvalStatus"]
+    },
+    "loans": {
+      "path": "loans/{loanId}",
+      "description": "Car loan request records tracked by staff and verified by admin/security",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "staffId": { "type": "string" },
+        "staffName": { "type": "string" },
+        "vehicleId": { "type": "string" },
+        "vehicleName": { "type": "string" },
+        "vehiclePlate": { "type": "string" },
+        "purpose": { "type": "string" },
+        "destination": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "PENDING_KEAMANAN", "APPROVED_IN_TRIP", "REJECTED_BY_KEAMANAN", "RETURNED_COMPLETED"] },
+        "timestamp": { "type": "timestamp" },
+        "securityNotes": { "type": "string" },
+        "verifiedBySecurityName": { "type": "string" },
+        "requestTimeMillis": { "type": "number" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["id", "vehicleId", "status"]
+    }
+  }
+}
